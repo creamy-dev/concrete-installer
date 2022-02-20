@@ -1,0 +1,19 @@
+{
+  "name": "concrete-installer",
+  "version": "0.1.0",
+  "description": "Installer for the Concrete code editor.",
+  "main": "index.js",
+  "scripts": {
+    "start": "deno run --allow-run --allow-net --unstable --allow-read --allow-write --allow-env index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/creamy-dev/concrete-installer.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/creamy-dev/concrete-installer/issues"
+  },
+  "homepage": "https://github.com/creamy-dev/concrete-installer#readme"
+}
