@@ -4,7 +4,8 @@
   "description": "Installer for the Concrete code editor.",
   "main": "index.js",
   "scripts": {
-    "start": "deno run --allow-run --allow-net --unstable --allow-read --allow-write --allow-env index.js"
+    "start": "deno run --allow-run --allow-net --unstable --allow-read --allow-write --allow-env index.js",
+    "compile": "deno compile --allow-run --allow-net --unstable --allow-read --allow-write --allow-env index.js"
   },
   "repository": {
     "type": "git",
