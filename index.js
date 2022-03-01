@@ -1,7 +1,7 @@
 import lib from './lib.js';
 
 async function main() {
-    if (Deno.build.os == "windows") {
+    if (Deno.build.os !== "windows") {
         console.log("We do not currently support " + Deno.build.os + ".");
         Deno.exit(1);
     } else {

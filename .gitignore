@@ -106,3 +106,6 @@ dist
 # Out for concrete-installer
 concrete-installer
 concrete-installer.exe
+
+# Deno
+deno_modules
