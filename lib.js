@@ -38,14 +38,19 @@ export default {
                 delete argv[argv.length - 1];
             } else if (Deno.build.os == "windows" && arg.endsWith("\\") || Deno.build.os == "linux" && arg.endsWith("/")) {
                 argv.push(arg.slice(0, -1));
-            } else {
+            } else if (Deno.build.os == "windows" && arg.startsWith("\\") || Deno.build.os == "linux" && arg.startsWith("/")) {
                 argv.push(arg);
             }
         }
 
-        console.log(argv.join("/"));
+        if (Deno.build.os == "windows") {
+            let x = argv.join("\\");
 
-        if (Deno.build.os == "windows") return argv.join("\\");
+            if (x.startsWith("\\")) {
+                x = "C:" + x;
+            }
+        };
+        
         return argv.join("/");
     },
     "get": async function(url) {
