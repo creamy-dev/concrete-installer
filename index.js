@@ -44,6 +44,10 @@ async function get(url) {
     return text;
 }
 
+async function getHomeDir() {
+    return Deno.env.get("HOME") || Deno.env.get("HOMEPATH") || Deno.env.get("USERPROFILE");
+}
+
 async function main() {
     if (Deno.build.os != "windows") {
         console.log("We do not currently support " + Deno.build.os + ".");
@@ -51,15 +55,15 @@ async function main() {
     } else {
         console.log("Creating Concrete directories...");
 
-        if (existsSync(join(os.homeDir(), "AppData", "Local", "Concrete", "Concrete-win32-x64", "Concrete.exe"))) {
+        if (existsSync(join(getHomeDir(), "AppData", "Local", "Concrete", "Concrete-win32-x64", "Concrete.exe"))) {
             console.log("Concrete already exists! Attempting to kill Concrete...");
             await runShell("taskkill /f /im Concrete.exe");
             console.log("Deleting Concrete...");
-            await Deno.remove(join(os.homeDir(), "AppData", "Local", "Concrete"), { recursive: true });
+            await Deno.remove(join(getHomeDir(), "AppData", "Local", "Concrete"), { recursive: true });
         }
 
         try {
-            await Deno.mkdir(join(os.homeDir(), "AppData", "Local", "Concrete"), { recursive: true });
+            await Deno.mkdir(join(getHomeDir(), "AppData", "Local", "Concrete"), { recursive: true });
         } catch (e) {
             console.error("Error creating Concrete directory! " + e);
             Deno.exit(1);
@@ -79,19 +83,19 @@ async function main() {
         
         console.log("Fetched Concrete.zip. Extracting...");
 
-        await Deno.writeTextFile(join(os.tempDir(), "ConcreteInstall.bat"), `@echo off\ntar xf "${join(os.tempDir(), "Concrete.zip")}" -C "${join(os.homeDir(), "AppData", "Local", "Concrete")}"`);
+        await Deno.writeTextFile(join(os.tempDir(), "ConcreteInstall.bat"), `@echo off\ntar xf "${join(os.tempDir(), "Concrete.zip")}" -C "${join(getHomeDir(), "AppData", "Local", "Concrete")}"`);
         await runShell(join(os.tempDir(), "ConcreteInstall.bat"));
         console.log("Concrete has been installed!\nCreating desktop shortcut...");
         
         let shortcutVBS = "";
 
         shortcutVBS += `Set oWS = WScript.CreateObject("WScript.Shell")\n`;
-        shortcutVBS += `sLinkFile = "${join(os.homeDir(), "Desktop", "Concrete.lnk")}"\n`;
+        shortcutVBS += `sLinkFile = "${join(getHomeDir(), "Desktop", "Concrete.lnk")}"\n`;
         shortcutVBS += `Set oLink = oWS.CreateShortcut(sLinkFile)\n`;
-        shortcutVBS += `    oLink.TargetPath = "${join(os.homeDir(), "AppData", "Local", "Concrete", "Concrete-win32-x64", "Concrete.exe")}"\n`;
+        shortcutVBS += `    oLink.TargetPath = "${join(getHomeDir(), "AppData", "Local", "Concrete", "Concrete-win32-x64", "Concrete.exe")}"\n`;
         shortcutVBS += `    oLink.Description = "Runs the Concrete code editor."\n`;
-        shortcutVBS += `    oLink.IconLocation = "${join(os.homeDir(), "AppData", "Local", "Concrete", "Concrete-win32-x64", "Concrete.exe")}"\n`;
-        shortcutVBS += `    oLink.WorkingDirectory = "${join(os.homeDir(), "AppData", "Local", "Concrete", "Concrete-win32-x64")}"\n`;
+        shortcutVBS += `    oLink.IconLocation = "${join(getHomeDir(), "AppData", "Local", "Concrete", "Concrete-win32-x64", "Concrete.exe")}"\n`;
+        shortcutVBS += `    oLink.WorkingDirectory = "${join(getHomeDir(), "AppData", "Local", "Concrete", "Concrete-win32-x64")}"\n`;
         shortcutVBS += `oLink.Save\n`;
 
         await Deno.writeTextFile(join(os.tempDir(), "ConcreteShortcut.vbs"), shortcutVBS);
