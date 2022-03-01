@@ -1,7 +1,4 @@
-import os from "https://deno.land/x/dos@v0.11.0/mod.ts";
-import axios from "https://deno.land/x/axiod/mod.ts";
 import { existsSync } from "https://deno.land/std/fs/mod.ts";
-import { join } from "https://deno.land/std/path/mod.ts";
 
 async function runShell(cmd) {
     return new Promise(async (resolve, reject) => {
@@ -36,9 +33,20 @@ async function download(source, destination) {
     Deno.close(file.rid);
 }
 
+async function join(...args) {
+    if (Deno.build.os == "windows") return args.join("\\");
+    return args.join("/");
+}
+
+async function get(url) {
+    const response = await fetch(url);
+    const text = await response.text();
+    return text;
+}
+
 async function main() {
-    if (os.platform() != "windows") {
-        console.log("We do not currently support " + os.platform() + ".");
+    if (Deno.build.os != "windows") {
+        console.log("We do not currently support " + Deno.build.os + ".");
         Deno.exit(1);
     } else {
         console.log("Creating Concrete directories...");
@@ -60,8 +68,8 @@ async function main() {
         console.log("Downloading Concrete...");
 
         try {
-            let data = await axios.get("https://api.github.com/repos/ashxi/project-kilo/releases/latest");
-            let url = data.data.assets[0].browser_download_url;
+            let data = await get("https://api.github.com/repos/ashxi/project-kilo/releases/latest");
+            let url = JSON.parse(data).assets[0].browser_download_url;
 
             await download(url, join(os.tempDir(), "Concrete.zip"));
         } catch (e) {
