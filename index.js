@@ -1,5 +1,3 @@
-import { existsSync } from "https://deno.land/std/fs/mod.ts";
-
 async function runShell(cmd) {
     return new Promise(async (resolve, reject) => {
         const p = Deno.run({
@@ -46,6 +44,15 @@ async function get(url) {
 
 async function getHomeDir() {
     return Deno.env.get("HOME") || Deno.env.get("HOMEPATH") || Deno.env.get("USERPROFILE");
+}
+
+async function existsSync(item) {
+    try {
+        await Deno.stat(item);
+        return true;
+    } catch (e) {
+        return false;
+    }
 }
 
 async function main() {
