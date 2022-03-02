@@ -1,7 +1,9 @@
 import lib from './lib.js';
 
 async function main() {
-    if (Deno.build.os !== "windows") {
+    if (Deno.build.os === "linux") {
+        console.log(await lib.existsSync(await lib.join(lib.getHomeDir(), "AppData", "Local", "Concrete", "Concrete-win32-x64", "Concrete.exe")));
+    } else if (Deno.build.os !== "windows") {
         console.log("We do not currently support " + Deno.build.os + ".");
         Deno.exit(1);
     } else {
