@@ -27,7 +27,15 @@ async function main() {
 
         try {
             let data = await lib.get("https://api.github.com/repos/ashxi/project-kilo/releases/latest");
-            let url = JSON.parse(data).assets[0].browser_download_url;
+            let parsedData = JSON.parse(data);
+            let url = "";
+
+            for (let asset of parsedData.assets) {
+                if (asset.name.startsWith("Concrete-win32-x64")) {
+                    url = asset.browser_download_url;
+                    break;
+                }
+            }
 
             await lib.download(url, await lib.join(lib.tempDir(), "Concrete.zip"));
         } catch (e) {
